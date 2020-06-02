@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}FINDOLOGIC-API Demo!{% endblock %}
+
+{% block body %}
+
+<div class="example-wrapper">
+    {% if response.request.query %}
+        <h4>Search results for <strong>{{ response.request.query }}</strong> (<strong>{{ response.result.metadata.totalResults }}</strong> hits)</h4>
+    {% else %}
+        <h4>Search results (<strong>{{ response.result.metadata.totalResults }}</strong> hits)</h4>
+    {% endif %}
+    {{ dump(response) }}
+
+    <div class="row">
+        {# Filter container for Mobile #}
+        <div class="filter-container col s12 m0 l0 xl0">
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col l9">
+        </div>
+        <div class="col l3">
+            <div class="row">
+                <div class="col l2"></div>
+                <div class="col l10">
+                    {% set pageCount = (response.result.metadata.totalResults / response.request.count) | round(0, 'ceil') %}
+                    {% set currentPage = ((response.request.first - 1) / (response.request.count)) | round(0, 'ceil') + 1 %}
+                    <ul class="pagination">
+                        <li class="{{ currentPage == 1 ? 'disabled' : '' }}"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                        <li class="active"><a href="#!">1</a></li>
+                        <li class="waves-effect"><a href="#!">2</a></li>
+                        <li class="waves-effect"><a href="#!">3</a></li>
+                        <li class="waves-effect"><a href="#!">4</a></li>
+                        <li class="waves-effect"><a href="#!">5</a></li>
+                        <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        {# Filter container for Desktop #}
+        <div class="filter-container col s0 m3 l2">
+            <div class="row">
+                {% for mainFilter in response.result.mainFilters %}
+                    <div class="col s12">
+                        <span>{{ mainFilter.displayName }}</span>
+                    </div>
+                {% endfor %}
+
+                <div class="col s12">
+                    <div class="divider"></div>
+                </div>
+
+                {% for otherFilter in response.result.otherFilters %}
+                    <div class="col s12">
+                        <span>{{ otherFilter.displayName }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="products col s12 m9 l10">
+            {% for row in response.result.items|batch(4) %}
+                <div class="row">
+                    {% for product in row %}
+                        {% include 'findologic_api/product.html.twig' with {
+                            'item': product,
+                            'currencySymbol': response.result.metadata.currencySymbol
+                        } %}
+                    {% endfor %}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

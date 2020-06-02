@@ -1,0 +1,25 @@
+#navigation {
+  .brand-logo {
+    margin-left: 10px;
+
+    img {
+      width: 160px;
+
+      @media (max-width: $small-breakpoint) {
+        width: 140px;
+      }
+    }
+  }
+
+  .search-container {
+    margin-left: 13rem;
+  }
+
+  #github-logo {
+    height: 32px;
+  }
+
+  .fin-docs {
+    margin-left: .5rem;
+  }
+}
